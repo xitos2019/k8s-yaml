@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: teamcity-server
+  labels:
+   app: teamcity-pod
+spec:
+  type: LoadBalancer
+  selector:
+    app: teamcity-pod
+  ports:
+  - port: 80
+    protocol: TCP
+    name: http
+    targetPort: 8111
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: teamcity
+spec:
+  selector:
+    app: teamcity-pod
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8111
+  type: ClusterIP
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teamcity-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teamcity-pod
+  template:
+    metadata:
+      labels:
+        app: teamcity-pod
+    spec:
+      containers:
+      - name: teamcity-container
+        image: jetbrains/teamcity-server:latest
+        #port:
+        # containerPort: 8111
+        volumeMounts:
+          - name: cloud-storage
+            mountPath: "/data/teamcity_server/datadir"
+      volumes:
+      - name: cloud-storage
+        persistentVolumeClaim:
+           claimName: aws-pvc-sc     

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cache
+  template:
+    metadata:
+      labels:
+        app: cache
+    spec:
+      containers:
+      - name: cache-container
+        image: redis
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - mountPath: /var/lib/redis
+          name: cache-data
+      volumes:
+      - name: cache-data
+        persistentVolumeClaim:
+          claimName: cache
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cache
+  name: cache
+spec:
+  ports:
+  - name: "tcp"
+    port: 6379
+  selector:
+    app: cache
+

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: php-fpm
+        image: 582311285210.dkr.ecr.eu-west-2.amazonaws.com/alpdockerimages:php-app
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+                #- mountPath: /app
+                #name: cloud-storage
+          - mountPath: /data
+            name: data-volume
+      volumes:
+              #- name: cloud-storage
+              #persistentVolumeClaim:
+              # claimName: aws-pvc-sc
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: data
+      imagePullSecrets:
+      - name: aws-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: app
+  name: app
+spec:
+  ports:
+  - name: "tcp"
+    port: 9000
+  selector:
+    app: app
+
+

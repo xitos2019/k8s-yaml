@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: nginx-container
+        image: 582311285210.dkr.ecr.eu-west-2.amazonaws.com/alpdockerimages:nginx-web 
+        ports:
+        - containerPort: 80
+          # volumeMounts:
+          #- mountPath: /app
+          #  name: cloud-storage
+          # volumes:
+          #- name: cloud-storage
+          # persistentVolumeClaim:
+          # claimName: aws-pvc-sc
+      imagePullSecrets:
+      - name: aws-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: web
+  name: web
+spec:
+  ports:
+  - name: "tcp"
+    port: 80
+    nodePort: 31426
+  type: NodePort
+  selector:
+    app: web
+

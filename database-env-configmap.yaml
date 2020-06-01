@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  ACCEPT_EULA: "Y"
+  PHP_IDE_CONFIG: serverName=app
+  SA_PASSWORD: Pa$$w0rd
+  XDEBUG_CONFIG: remote_enable=On remote_autostart=On remote_connect_back=Off remote_host=docker.for.win.localhost
+    remote_port=9000
+kind: ConfigMap
+metadata:
+  labels:
+    app: database-env
+  name: database-env

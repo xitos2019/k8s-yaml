@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: teamcity-server
   labels:
-   app: teamcity-pod
+   app: teamcity
 spec:
   type: LoadBalancer
   selector:
@@ -54,4 +54,4 @@ spec:
       volumes:
       - name: cloud-storage
         persistentVolumeClaim:
-           claimName: aws-pvc-sc     
+          claimName: teamcity     

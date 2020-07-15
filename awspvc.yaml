@@ -34,8 +34,8 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
-  storageClassName: ebs-storage-class
+      storage: 10Gi
+  storageClassName: ebs-storage
 
 ---
 

@@ -5,7 +5,7 @@ metadata:
   #  annotations: 
   #  iam.amazon.com/role: k8s-pods-s3-role
 spec:
-  replicas: 1
+  replicas: 1 
   selector:
     matchLabels:
       app: agent-pod
@@ -13,13 +13,13 @@ spec:
     metadata:
       annotations:
               #        iam.amazonaws.com/role: arn:aws:iam::430723739319:role/saad-s3-role
-         iam.amazonaws.com/role: arn:aws:iam::674528447826:role/k8s-pods-s3-role
+              #         iam.amazonaws.com/role: arn:aws:iam::674528447826:role/k8s-pods-s3-role
       labels:
         app: agent-pod
     spec:
       containers:
       - name: agent-container
-        image: 674528447826.dkr.ecr.eu-west-2.amazonaws.com/saad:saadna-latest
+        image: 582311285210.dkr.ecr.eu-west-2.amazonaws.com/teamcity:teamcity-agent 
         env:
           - name: SERVER_URL
             value: http://teamcity
@@ -28,5 +28,5 @@ spec:
             #  configMapKeyRef:
             #   key: AWS_ACCESS_KEY
             #   name: env
-      imagePullSecrets:
-      - name: aws-secret
+            #magePullSecrets:
+            # name: ecregent

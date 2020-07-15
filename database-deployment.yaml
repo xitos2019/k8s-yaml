@@ -85,3 +85,17 @@ spec:
   selector:
     app: database
 
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: ebs-storage
+

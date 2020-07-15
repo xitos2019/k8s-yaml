@@ -13,24 +13,69 @@ spec:
         app: teamcity
     spec:
       containers:
-      - name: teamcity-server
+      - name: teamcity-container
         image: jetbrains/teamcity-server:latest
         ports:
         - containerPort: 8111
-
+        volumeMounts:
+          - name: teamcitydata
+            mountPath: /data/teamcity_server/datadir
+      volumes:
+      - name: teamcitydata
+        persistentVolumeClaim:
+          claimName: teamcity 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
   labels:
     app: teamcity
-  name: teamcity
+  name: teamcity-server
+  annotations:
+    # Note that the backend talks over HTTP.
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    # TODO: Fill in with the ARN of your certificate.
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:eu-west-2:582311285210:certificate/ba4214aa-56d9-4711-8b9e-de85837ac205
+    # Only run SSL on the port named "https" below.
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
+
 spec:
   ports:
-  - name: "tcp"
-    port: 8111
-    nodePort: 32100
-  type: NodePort
+  - name: http
+    port: 80
+    targetPort: 8111
+  - name: https
+    port: 443
+    targetPort: 8111
+  type: LoadBalancer
   selector:
     app: teamcity
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: teamcity
+spec:
+  selector:
+    app: teamcity
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8111
+  type: ClusterIP
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: teamcity
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: ebs-storage-class
 

@@ -20,8 +20,8 @@ spec:
         volumeMounts:
                 #- mountPath: /app
                 #name: cloud-storage
-          - mountPath: /data
-            name: data-volume
+        - mountPath: /data
+          name: data-volume
       volumes:
               #- name: cloud-storage
               #persistentVolumeClaim:
@@ -45,4 +45,17 @@ spec:
   selector:
     app: app
 
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: ebs-storage
 
